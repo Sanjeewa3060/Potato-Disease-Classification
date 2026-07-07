@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeafGuard AI - Smart Crop Disease Diagnosis</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Protect your crops with LeafGuard AI. Upload a potato leaf image and get instant deep learning disease predictions for Early Blight, Late Blight, and Healthy crops.">
+    <meta name="keywords" content="LeafGuard AI, Potato Disease, Crop Protection, Deep Learning, TensorFlow, Alternaria solani, Phytophthora infestans">
+    <meta name="author" content="Nagendran Sanjeevan">
+    <meta property="og:title" content="LeafGuard AI - Potato Leaf Disease Classification">
+    <meta property="og:description" content="Get real-time, highly accurate disease diagnosis using Keras CNN models.">
+    <meta property="og:type" content="website">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Icons & Charts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+    <!-- Sticky Navigation Bar -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="#hero" class="nav-brand">
+                <i class="fa-solid fa-leaf logo-icon"></i>
+                <span class="logo-text">LeafGuard <span class="accent-text">AI</span></span>
+            </a>
+            
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#hero" class="nav-link active">Home</a></li>
+                <li><a href="#features" class="nav-link">Features</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#footer" class="nav-link">Contact</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <button id="themeToggle" class="theme-toggle" aria-label="Toggle Theme">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open Menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero-section" id="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <div class="badge-container">
+                    <span class="hero-badge"><i class="fa-solid fa-wand-magic-sparkles"></i> Powered by Deep Learning</span>
+                </div>
+                <h1 class="hero-title">Protect Your Crops with <span class="gradient-text">AI</span></h1>
+                <p class="hero-subtitle">Upload a potato leaf image and receive instant disease prediction using state-of-the-art Deep Learning models.</p>
+                <div class="hero-buttons">
+                    <a href="#analyzer" class="btn btn-primary btn-lg"><i class="fa-solid fa-upload"></i> Upload Image</a>
+                    <a href="#features" class="btn btn-outline btn-lg">Learn More <i class="fa-solid fa-arrow-down"></i></a>
+                </div>
+            </div>
+            
+            <!-- CSS Animated Leaf Scanner Graphic -->
+            <div class="hero-visual">
+                <div class="visual-wrapper">
+                    <div class="scanner-container">
+                        <div class="leaf-graphic">
+                            <i class="fa-solid fa-leaf main-visual-leaf"></i>
+                            <div class="scan-laser"></div>
+                            <div class="pulse-ring"></div>
+                        </div>
+                        <div class="node node-1"><i class="fa-solid fa-microchip"></i></div>
+                        <div class="node node-2"><i class="fa-solid fa-brain"></i></div>
+                        <div class="node node-3"><i class="fa-solid fa-dna"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="wave-divider">
+            <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M985.66,92.83C906.67,72,823.78,31,743.84,14.19c-82.26-17.34-168.06-16.33-250.45.39-57.84,11.73-114,31.07-172,41.86A600.21,600.21,0,0,1,0,27.35V120H1200V95.8C1132.19,118.92,1055.71,111.31,985.66,92.83Z" class="shape-fill"></path>
+            </svg>
+        </div>
+    </header>
+
+    <!-- Main Workspace Section -->
+    <main class="main-content">
+        <div class="container">
+            
+            <!-- Diagnostics Workspace (Analyzer) -->
+            <section id="analyzer" class="workspace-section">
+                <!-- Dropdown Select Crop Container -->
+                <div class="crop-select-container">
+                    <label for="diseaseType" class="select-label"><i class="fa-solid fa-seedling"></i> Select Target Crop</label>
+                    <div class="custom-select-wrapper">
+                        <select id="diseaseType" class="type-dropdown">
+                            <option value="1">Potato Leaf Disease</option>
+                            <option value="2">Tomato Leaf Disease</option>
+                            <option value="3">Corn Leaf Disease</option>
+                        </select>
+                        <i class="fa-solid fa-chevron-down select-arrow"></i>
+                    </div>
+                </div>
+
+                <!-- Main Analyzer Card -->
+                <div class="card main-card">
+                    <!-- Drop & Drag Upload Area -->
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-content">
+                            <div class="pulse-upload-icon">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                            </div>
+                            <h3>Drag &amp; Drop your leaf image here</h3>
+                            <p class="upload-or">or</p>
+                            <button type="button" class="btn btn-secondary btn-sm">Browse Files</button>
+                            <span class="upload-hint">Supported: PNG, JPG, JPEG &bull; Max 5MB</span>
+                        </div>
+                        <input type="file" id="fileInput" accept="image/png, image/jpeg, image/jpg" hidden>
+                    </div>
+
+                    <!-- Image Preview Area -->
+                    <div class="preview-area" id="previewArea" hidden>
+                        <div class="image-container">
+                            <img id="imagePreview" src="" alt="Selected leaf image preview">
+                            <button id="removeImage" class="btn-remove" aria-label="Remove Image" title="Remove Image">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
+                        <div class="file-info">
+                            <span class="file-icon"><i class="fa-solid fa-image"></i></span>
+                            <span id="fileName" class="file-name">leaf-image.jpg</span>
+                            <span id="fileSize" class="file-size">1.2 MB</span>
+                        </div>
+                    </div>
+
+                    <!-- Trigger Analyze Button -->
+                    <div class="action-section">
+                        <button id="analyzeBtn" class="btn btn-primary btn-lg btn-block" disabled>
+                            <i class="fa-solid fa-magnifying-glass-chart"></i>
+                            <span>Analyze Leaf</span>
+                        </button>
+                        <button id="newAnalysis" class="btn btn-secondary btn-lg btn-block" hidden>
+                            <i class="fa-solid fa-rotate-left"></i>
+                            <span>Analyze Another Leaf</span>
+                        </button>
+                    </div>
+
+                    <!-- Loading State (Centered Overlay) -->
+                    <div class="loading-state" id="loadingState" hidden>
+                        <div class="loader-wrapper">
+                            <div class="spinner"></div>
+                            <i class="fa-solid fa-leaf spinner-leaf"></i>
+                        </div>
+                        <div class="loading-messages">
+                            <p class="loading-title">Analyzing leaf...</p>
+                            <p class="loading-desc">AI is identifying disease...</p>
+                        </div>
+                        <div class="loading-progress-container">
+                            <div class="loading-progress-bar" id="loadingProgressBar"></div>
+                        </div>
+                        <span class="estimated-time">Estimated time: 2&ndash;3 seconds</span>
+                    </div>
+
+                    <!-- Error State Box -->
+                    <div class="error-state" id="errorState" hidden>
+                        <div class="error-icon-box">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                        </div>
+                        <div class="error-details">
+                            <h4>Analysis Failed</h4>
+                            <p id="errorText">An error occurred during classification. Please check your file format and connection.</p>
+                        </div>
+                        <button id="errorRetry" class="btn btn-outline-danger">Try Again <i class="fa-solid fa-redo"></i></button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Results & Details Area (Initially Hidden) -->
+            <section id="resultsSection" class="results-section" hidden>
+                <div class="results-layout-grid">
+                    
+                    <!-- Main Diagnostic Result Card -->
+                    <div class="card result-card animated-card">
+                        <div class="result-header">
+                            <span class="section-tag"><i class="fa-solid fa-chart-pie"></i> Prediction Verdict</span>
+                            <div class="disease-badge" id="diseaseBadge">
+                                <i class="fa-solid fa-circle-question" id="verdictIcon"></i>
+                                <span id="diseaseName">Healthy</span>
+                            </div>
+                        </div>
+
+                        <!-- Top Level Confidence Score -->
+                        <div class="confidence-showcase">
+                            <div class="confidence-gauge">
+                                <span class="confidence-label"><i class="fa-solid fa-chart-line"></i> Confidence Score</span>
+                                <span class="confidence-percentage" id="confidenceValue">0%</span>
+                            </div>
+                            <div class="progress-bar-wrapper">
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar-fill" id="confidenceFill"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Individual Probability Breakdown -->
+                        <div class="probability-breakdown">
+                            <h5>Probability Distribution</h5>
+                            <div class="probability-bars-container" id="probabilityBars"></div>
+                        </div>
+                    </div>
+
+                    <!-- Model Details / Training Metrics Card -->
+                    <div class="card model-metrics-card animated-card">
+                        <div class="metrics-header">
+                            <span class="section-tag"><i class="fa-solid fa-network-wired"></i> Neural Network Metrics</span>
+                            <h4>Model Performance</h4>
+                        </div>
+                        <p class="metrics-desc">Training metrics on 1,500+ agricultural leaf datasets compiled under validation settings.</p>
+                        <div class="chart-wrapper">
+                            <canvas id="accuracyChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detailed Disease Intelligence Sheet -->
+                <div class="card disease-info-card animated-card" id="diseaseInfoCard">
+                    <div class="info-sheet-header">
+                        <div class="title-area">
+                            <i class="fa-solid fa-leaf info-leaf-icon"></i>
+                            <div>
+                                <h4>Disease Intelligence Sheet</h4>
+                                <p>Actionable treatment steps and pathology details for the diagnosed condition.</p>
+                            </div>
+                        </div>
+                        <div id="diseaseSeverityBadge" class="severity-badge-container">
+                            <span class="severity-badge">High Severity</span>
+                        </div>
+                    </div>
+
+                    <hr class="divider">
+
+                    <!-- Info Grid -->
+                    <div class="info-sheet-grid">
+                        <div class="info-block desc-block">
+                            <h5><i class="fa-solid fa-circle-info"></i> Description</h5>
+                            <p id="infoDesc">Retrieving disease profile...</p>
+                        </div>
+                        
+                        <div class="info-block">
+                            <h5><i class="fa-solid fa-dna"></i> Pathogen / Causes</h5>
+                            <p id="infoCauses">Determined by model output.</p>
+                        </div>
+
+                        <div class="info-block">
+                            <h5><i class="fa-solid fa-bug"></i> Symptoms</h5>
+                            <p id="infoSymptoms">Visual identification cues.</p>
+                        </div>
+
+                        <div class="info-block">
+                            <h5><i class="fa-solid fa-prescription-bottle-medical"></i> Immediate Treatment</h5>
+                            <p id="infoTreatment">Remediation steps.</p>
+                        </div>
+
+                        <div class="info-block">
+                            <h5><i class="fa-solid fa-shield-halved"></i> Preventive Measures</h5>
+                            <p id="infoPrevention">Long-term protective practices.</p>
+                        </div>
+
+                        <div class="info-block">
+                            <h5><i class="fa-solid fa-cloud-sun-rain"></i> Weather Conditions</h5>
+                            <p id="infoWeather">Climate factors favoring disease spread.</p>
+                        </div>
+
+                        <div class="info-block fungicides-block">
+                            <h5><i class="fa-solid fa-spray-can-sparkles"></i> Suitable Fungicides</h5>
+                            <div class="fungicide-tags" id="infoFungicides"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Features Grid Section -->
+            <section class="features-section" id="features">
+                <div class="section-header">
+                    <span class="section-tag">Capabilities</span>
+                    <h2>Engineered for Agricultural Precision</h2>
+                    <p>LeafGuard AI leverages cutting-edge deep learning to offer rapid diagnostic services for high-yield farming.</p>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon-wrapper">
+                            <i class="fa-solid fa-bolt-lightning"></i>
+                        </div>
+                        <h3>Real-time Detection</h3>
+                        <p>Analyze leaf pathology in under 3 seconds directly on your mobile device or desktop browser.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon-wrapper">
+                            <i class="fa-solid fa-brain"></i>
+                        </div>
+                        <h3>CNN Deep Learning</h3>
+                        <p>Powered by custom Convolutional Neural Networks trained on thousands of plant pathogen images.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon-wrapper">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </div>
+                        <h3>Accurate Prediction</h3>
+                        <p>High sensitivity and specificity ratios for identifying early blight, late blight, and healthy tissues.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- About LeafGuard AI Section -->
+            <section class="about-section" id="about">
+                <div class="about-grid">
+                    <div class="about-content">
+                        <span class="section-tag">Project Overview</span>
+                        <h2>About LeafGuard AI</h2>
+                        <p>LeafGuard AI is an advanced decision-support platform designed to help farmers, researchers, and agronomists identify crop diseases at early stages. Early diagnosis prevents crop damage, reduces pesticide usage, and secures harvests.</p>
+                        
+                        <div class="about-checklist">
+                            <div class="check-item">
+                                <i class="fa-solid fa-check"></i>
+                                <span>Dataset preprocessing with augmentation techniques to address class imbalance.</span>
+                            </div>
+                            <div class="check-item">
+                                <i class="fa-solid fa-check"></i>
+                                <span>CNN model architecture compiled using TensorFlow and Keras backends.</span>
+                            </div>
+                            <div class="check-item">
+                                <i class="fa-solid fa-check"></i>
+                                <span>FastAPI backend delivering lightning-fast, high-concurrency REST endpoints.</span>
+                            </div>
+                            <div class="check-item">
+                                <i class="fa-solid fa-check"></i>
+                                <span>Clean, modular, accessible and highly responsive static frontend.</span>
+                            </div>
+                        </div>
+
+                        <div class="academic-note">
+                            <i class="fa-solid fa-circle-info"></i>
+                            <p>This project was built for educational and research purposes as a demonstrating prototype of deep learning in smart agriculture.</p>
+                        </div>
+                    </div>
+                    <div class="about-visual">
+                        <div class="tech-stack-display">
+                            <div class="tech-node html-node"><i class="fa-brands fa-html5"></i><span>HTML5</span></div>
+                            <div class="tech-node css-node"><i class="fa-brands fa-css3-alt"></i><span>CSS3</span></div>
+                            <div class="tech-node js-node"><i class="fa-brands fa-js"></i><span>JS (ES6)</span></div>
+                            <div class="tech-node py-node"><i class="fa-brands fa-python"></i><span>Python</span></div>
+                            <div class="tech-node tf-node"><i class="fa-solid fa-gears"></i><span>TensorFlow</span></div>
+                            <div class="tech-node api-node"><i class="fa-solid fa-server"></i><span>FastAPI</span></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer" id="footer">
+        <div class="footer-container">
+            <div class="footer-brand-section">
+                <a href="#hero" class="footer-brand">
+                    <i class="fa-solid fa-leaf"></i>
+                    <span>LeafGuard <span class="accent-text">AI</span></span>
+                </a>
+                <p>Empowering crop management with advanced diagnostic deep learning algorithms.</p>
+                <div class="footer-socials">
+                    <a href="https://github.com/Sanjeewa3060" target="_blank" rel="noopener" aria-label="GitHub Developer Profile"><i class="fa-brands fa-github"></i></a>
+                    <a href="https://www.linkedin.com/in/nagendran-sanjeevan/" target="_blank" rel="noopener" aria-label="LinkedIn Developer Profile"><i class="fa-brands fa-linkedin-in"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-links-section">
+                <h6>Quick Navigation</h6>
+                <ul>
+                    <li><a href="#hero">Home</a></li>
+                    <li><a href="#analyzer">Leaf Analyzer</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#about">Project About</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-tech-section">
+                <h6>Technologies</h6>
+                <div class="tech-tags">
+                    <span class="tech-tag">Python</span>
+                    <span class="tech-tag">TensorFlow</span>
+                    <span class="tech-tag">FastAPI</span>
+                    <span class="tech-tag">JavaScript</span>
+                    <span class="tech-tag">HTML5</span>
+                    <span class="tech-tag">CSS3</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <div class="footer-bottom-container">
+                <p>&copy; 2026 LeafGuard AI. All rights reserved.</p>
+                <p class="developer-credit">Developed by <span class="dev-name">Nagendran Sanjeevan</span> &bull; University of Vavuniya</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Custom Script -->
+    <script src="/static/script.js"></script>
+</body>
+
+</html>
